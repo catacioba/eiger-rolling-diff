@@ -3,26 +3,16 @@ package rdiff
 import (
 	"bufio"
 	"io"
-	"os"
 )
 
 type ChunkMetadata struct {
 	start          int
-	size           int
+	blockLen       int
 	weakChecksum   uint16
 	strongChecksum [16]byte
 }
 
-func Signature(filename string, chunkSize int) ([]ChunkMetadata, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	return SignatureReader(file, chunkSize)
-}
-
-func SignatureReader(file io.Reader, chunkSize int) ([]ChunkMetadata, error) {
+func Signature(file io.Reader, chunkSize int) ([]ChunkMetadata, error) {
 	reader := bufio.NewReader(file)
 	buf := make([]byte, chunkSize)
 
@@ -48,8 +38,8 @@ func SignatureReader(file io.Reader, chunkSize int) ([]ChunkMetadata, error) {
 
 		chunk := ChunkMetadata{
 			start:          position,
-			size:           n,
-			weakChecksum:   rollSum.ChuckSum(),
+			blockLen:       n,
+			weakChecksum:   rollSum.CheckSum(),
 			strongChecksum: strong,
 		}
 		chunks = append(chunks, chunk)

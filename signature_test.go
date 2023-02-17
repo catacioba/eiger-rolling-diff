@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestSignatureReader(t *testing.T) {
+func TestSignature(t *testing.T) {
 	type args struct {
 		file      io.Reader
 		chunkSize int
@@ -36,13 +36,13 @@ func TestSignatureReader(t *testing.T) {
 			want: []ChunkMetadata{
 				{
 					start:          0,
-					size:           4,
-					weakChecksum:   2250,
+					blockLen:       4,
+					weakChecksum:   4642,
 					strongChecksum: [16]byte{8, 214, 192, 90, 33, 81, 42, 121, 161, 223, 235, 157, 42, 143, 38, 47}},
 				{
 					start:          4,
-					size:           4,
-					weakChecksum:   5850,
+					blockLen:       4,
+					weakChecksum:   21090,
 					strongChecksum: [16]byte{222, 206, 128, 119, 117, 154, 43, 54, 185, 111, 189, 18, 3, 168, 50, 171}},
 			},
 			wantErr: false,
@@ -56,18 +56,18 @@ func TestSignatureReader(t *testing.T) {
 			want: []ChunkMetadata{
 				{
 					start:          0,
-					size:           4,
-					weakChecksum:   2250,
+					blockLen:       4,
+					weakChecksum:   4642,
 					strongChecksum: [16]byte{8, 214, 192, 90, 33, 81, 42, 121, 161, 223, 235, 157, 42, 143, 38, 47}},
 				{
 					start:          4,
-					size:           4,
-					weakChecksum:   5850,
+					blockLen:       4,
+					weakChecksum:   21090,
 					strongChecksum: [16]byte{222, 206, 128, 119, 117, 154, 43, 54, 185, 111, 189, 18, 3, 168, 50, 171}},
 				{
 					start:          8,
-					size:           2,
-					weakChecksum:   285,
+					blockLen:       2,
+					weakChecksum:   2314,
 					strongChecksum: [16]byte{157, 209, 114, 168, 54, 51, 79, 129, 184, 231, 124, 107, 221, 98, 27, 162},
 				},
 			},
@@ -76,7 +76,7 @@ func TestSignatureReader(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := SignatureReader(tt.args.file, tt.args.chunkSize)
+			got, err := Signature(tt.args.file, tt.args.chunkSize)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("SignatureReader() error = %v, wantErr %v", err, tt.wantErr)
 				return

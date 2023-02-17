@@ -8,6 +8,8 @@ type RingBuffer interface {
 	Pop() byte
 	// Data returns the elements of the RingBuffer in their insertion order.
 	Data() []byte
+	Len() int
+	Clear()
 }
 
 // ArrayRingBuffer is an array-backed RingBuffer implementation.
@@ -74,4 +76,14 @@ func (a *ArrayRingBuffer) Data() []byte {
 	}
 
 	return data
+}
+
+func (a *ArrayRingBuffer) Len() int {
+	return a.size
+}
+
+func (a *ArrayRingBuffer) Clear() {
+	a.start = 0
+	a.end = 0
+	a.size = 0
 }
