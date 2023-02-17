@@ -44,7 +44,7 @@ func DiffFiles(file io.Reader, chunks []ChunkMetadata) (Delta, error) {
 	matches := make([]Match, 0)
 	additions := make([]Addition, 0)
 
-	position := 0
+	next := 0
 	for {
 		b, err := reader.ReadByte()
 		if err != io.EOF && err != nil {
@@ -58,10 +58,11 @@ func DiffFiles(file io.Reader, chunks []ChunkMetadata) (Delta, error) {
 			oldest := ringBuf.Pop()
 
 			addition := Addition{
-				NewIdx: position - chunkSize,
+				NewIdx: next,
 				Data:   oldest,
 			}
 			additions = append(additions, addition)
+			next++
 
 			rollSum.RotatePush(b, oldest)
 		} else {
@@ -70,11 +71,6 @@ func DiffFiles(file io.Reader, chunks []ChunkMetadata) (Delta, error) {
 
 		ringBuf.Push(b)
 
-		if ringBuf.Len() < chunkSize {
-			position += 1
-			continue
-		}
-
 		weakSum := rollSum.CheckSum()
 
 		if chunk, found := chunkMap[weakSum]; found {
@@ -82,26 +78,25 @@ func DiffFiles(file io.Reader, chunks []ChunkMetadata) (Delta, error) {
 
 			if bytes.Equal(strong[:], chunk.strongChecksum[:]) {
 				match := Match{
-					newIdx:   position - chunkSize + 1,
+					newIdx:   next,
 					oldIdx:   chunk.start,
 					blockLen: chunk.blockLen,
 				}
 				matches = append(matches, match)
+				next += 4
 				ringBuf.Clear()
 				rollSum.Reset()
 			}
 		}
-
-		position += 1
 	}
 
 	for ringBuf.Len() > 0 {
 		addition := Addition{
-			NewIdx: position - chunkSize,
+			NewIdx: next,
 			Data:   ringBuf.Pop(),
 		}
 		additions = append(additions, addition)
-		position++
+		next++
 	}
 
 	return Delta{
