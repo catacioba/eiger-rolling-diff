@@ -1,3 +1,3 @@
-module github.com/catacioba/eiger-rolling-diff
+module github.com/catacioba/rdiff
 
 go 1.19
