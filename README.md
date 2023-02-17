@@ -14,11 +14,14 @@ to the new file in order to obtain the new file. This is enough to handle delete
 was deleted should be neither copied nor added from/to the old file to obtain the new file.
 
 Usage:
-    go run cmd/main.go --chunkSize=<chunk_size> <old_file> <new_file>
 
-TODO:
+    go run cmd/main.go --chunkSize=<chunk_size> <old_file> <new_file>  
+
+
+TODO: 
 * Add CLI subcommands
-* Change chunk aggregation from `map[weaksum]->metadata` to `map[weaksum]->list[metadata]` to handle weaksum collisions.
+* Change chunk aggregation from `map[weaksum]->metadata` to `map[weaksum]->list[metadata]` to handle
+  weaksum collisions.
 * Change Signature representation
 * Change Delta representation
 * Add other rolling functions like Adler-32
