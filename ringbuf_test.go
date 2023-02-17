@@ -14,52 +14,63 @@ func TestArrayRingBuffer(t *testing.T) {
 
 	ringBuf.Push(1)
 
-	if !bytes.Equal(ringBuf.Data(), []byte{1}) {
-		t.Errorf("Data() should have only 1 element")
+	expectedData := []byte{1}
+	if !bytes.Equal(ringBuf.Data(), expectedData) {
+		t.Errorf("Data() should be %v", expectedData)
 	}
 
 	ringBuf.Push(2)
 	ringBuf.Push(3)
 	v := ringBuf.Pop()
 
-	if v != 1 {
-		t.Errorf("Pop() should return 1")
+	expectedPop := byte(1)
+	if v != expectedPop {
+		t.Errorf("Pop() should return %d", expectedPop)
 	}
-	if !bytes.Equal(ringBuf.Data(), []byte{2, 3}) {
-		t.Errorf("Data() should be [2, 3]")
+	expectedData = []byte{2, 3}
+	if !bytes.Equal(ringBuf.Data(), expectedData) {
+		t.Errorf("Data() should be %v", expectedData)
 	}
 
 	ringBuf.Push(4)
 
-	if !bytes.Equal(ringBuf.Data(), []byte{2, 3, 4}) {
-		t.Errorf("Data() should be [2, 3, 4]")
+	expectedData = []byte{2, 3, 4}
+	if !bytes.Equal(ringBuf.Data(), expectedData) {
+		t.Errorf("Data() should be %v", expectedData)
 	}
 
 	ringBuf.Push(5)
 
-	if !bytes.Equal(ringBuf.Data(), []byte{3, 4, 5}) {
-		t.Errorf("Data() should be [3, 4, 5]")
+	expectedData = []byte{3, 4, 5}
+	if !bytes.Equal(ringBuf.Data(), expectedData) {
+		t.Errorf("Data() should be %v", expectedData)
 	}
 
-	if ringBuf.Pop() != 3 {
-		t.Errorf("Pop() should return 3")
+	expectedPop = 3
+	if ringBuf.Pop() != expectedPop {
+		t.Errorf("Pop() should return %d", expectedPop)
 	}
-	if !bytes.Equal(ringBuf.Data(), []byte{4, 5}) {
-		t.Errorf("Data() should be [4, 5]")
-	}
-
-	if ringBuf.Pop() != 4 {
-		t.Errorf("Pop() should return 4")
-	}
-	if !bytes.Equal(ringBuf.Data(), []byte{5}) {
-		t.Errorf("Data() should be [5]")
+	expectedData = []byte{4, 5}
+	if !bytes.Equal(ringBuf.Data(), expectedData) {
+		t.Errorf("Data() should be %v", expectedData)
 	}
 
-	if ringBuf.Pop() != 5 {
-		t.Errorf("Pop() should return 5")
+	expectedPop = 4
+	if ringBuf.Pop() != expectedPop {
+		t.Errorf("Pop() should return %d", expectedPop)
 	}
-	if !bytes.Equal(ringBuf.Data(), []byte{}) {
-		t.Errorf("Data() should be []")
+	expectedData = []byte{5}
+	if !bytes.Equal(ringBuf.Data(), expectedData) {
+		t.Errorf("Data() should be %v", expectedData)
+	}
+
+	expectedPop = 5
+	if ringBuf.Pop() != expectedPop {
+		t.Errorf("Pop() should return %d", expectedPop)
+	}
+	expectedData = []byte{}
+	if !bytes.Equal(ringBuf.Data(), expectedData) {
+		t.Errorf("Data() should be %v", expectedData)
 	}
 
 	defer func() {
