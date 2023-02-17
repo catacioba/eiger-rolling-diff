@@ -50,6 +50,9 @@ func DiffFiles(file io.Reader, chunks []ChunkMetadata) (Delta, error) {
 		if err != io.EOF && err != nil {
 			return Delta{}, err
 		}
+		if err == io.EOF {
+			break
+		}
 
 		if ringBuf.Len() == chunkSize {
 			oldest := ringBuf.Pop()
@@ -90,10 +93,6 @@ func DiffFiles(file io.Reader, chunks []ChunkMetadata) (Delta, error) {
 		}
 
 		position += 1
-
-		if err == io.EOF {
-			break
-		}
 	}
 
 	for ringBuf.Len() > 0 {
