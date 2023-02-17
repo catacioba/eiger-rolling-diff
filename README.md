@@ -24,4 +24,5 @@ TODO:
   weaksum collisions.
 * Change Signature representation
 * Change Delta representation
+* Add E2E tests
 * Add other rolling functions like Adler-32
